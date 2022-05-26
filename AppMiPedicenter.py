@@ -1,14 +1,34 @@
-from flask import Flask, render_template, url_for
+from flask import Flask, render_template, url_for, flash, redirect
+from forms import RegistrationForm, LoginForm
+
 app = Flask(__name__)
+app.config['SECRET_KEY'] = '4ecd725281820152a8d856062cbc77'
 
 @app.route("/")
 @app.route("/home")
 def home():
         return render_template('home.html')
 
-@app.route("/login")
+@app.route("/register", methods=['GET','POST'])
+def register():
+        form = RegistrationForm()
+        if form.validate_on_submit():
+                flash(f'Cuenta creada con exito para {form.username.data}!', 'success')
+                return redirect(url_for('home'))
+        return render_template('register.html', title='Register', form=form)
+
+@app.route("/login",  methods=['GET','POST'])
 def login():
-        return render_template('login.html', title="LogIn")
+        form = LoginForm()
+        if form.validate_on_submit():
+                if form.email.data == 'juanarano17@gmail.com' and form.password.data == '123456':
+                        flash('Te logueaste con exito', 'success')
+                        return redirect(url_for('home'))
+                else:
+                        flash('Las credenciales no coinciden', 'danger')
+        return render_template('login.html', title="Login", form=form)
+
+
 
 @app.route("/podologo")
 def podo():
