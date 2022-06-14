@@ -1,8 +1,7 @@
-from flask import Flask, render_template, url_for, flash, redirect
-from forms import RegistrationForm, LoginForm
-
-app = Flask(__name__)
-app.config['SECRET_KEY'] = '4ecd725281820152a8d856062cbc77'
+from flask import render_template, url_for, flash, redirect
+from appmipedicenter.models import *
+from appmipedicenter.forms import RegistrationForm, LoginForm
+from appmipedicenter import app, bcrypt, db
 
 @app.route("/")
 @app.route("/home")
@@ -13,6 +12,14 @@ def home():
 def register():
         form = RegistrationForm()
         if form.validate_on_submit():
+                hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+                Empleado(id_empleado=form.email.data,
+                        dni=form.dni.data,
+                        username=form.username.data, 
+                        fecha_nacimiento=form.fecha_nacimiento.data,
+                        telefono=form.telefono.data,
+                        password=form.password.data,
+                        id_tipo=form.id_tipo.data)
                 flash(f'Cuenta creada con exito para {form.username.data}!', 'success')
                 return redirect(url_for('home'))
         return render_template('register.html', title='Register', form=form)
@@ -28,31 +35,18 @@ def login():
                         flash('Las credenciales no coinciden', 'danger')
         return render_template('login.html', title="Login", form=form)
 
-
-
-@app.route("/podologo")
+@app.route("/mi-perfil-podologo")
 def podo():
         return render_template('podologo.html', title = "Podologo")
 
-@app.route("/administrador")
-def admin():
-        return render_template('administrdor.html', title="Centro de accion del Administrador")
-
-@app.route("/recepcionista")
+@app.route("/mi-perfil-recepcionista")
 def recep():
         return render_template('recepcionista.html', title="Centro de accion del Recepcionista")
 
-@app.route("/recepcionista/calendario")
+@app.route("/calendario-recepcionista") #Incluye CRUD Turnos (envio mail), CURD Clientes y Disp Horario
 def calen_recep():
         return render_template('calen_recep.html', title="Calendario Vista Recepcionista")
 
-@app.route("/podologo/calendario")
+@app.route("/calendario-podologo")      #Incluye CRUD Turnos, Disp Horario e Historias Clinicas
 def calen_podo():
         return render_template('calen_podo.html', title="Calendario Vista Podologo")
-
-@app.route("/podologo/historia-clinica")
-def historiaClinica():
-        return render_template('hist_clin.html', title="Historias Clinicas")
-
-if __name__ == '__main__':
-        app.run(debug=True)
