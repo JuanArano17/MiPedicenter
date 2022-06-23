@@ -1,8 +1,13 @@
 from mailbox import NoSuchMailboxError
 from sqlalchemy import ForeignKey
-from appmipedicenter import db
+from appmipedicenter import db, login_manager
+from flask_login import UserMixin
 from abc import ABC
 from datetime import datetime
+
+@login_manager.user_loader
+def load_user(empleado_id):
+        return Empleado.query.get(empleado_id)
 
 class Tipoempleado(db.Model):
         id_tipo = db.Column(db.Integer, primary_key=True)
@@ -12,9 +17,9 @@ class Tipoempleado(db.Model):
         def __repr__(self):
                 return f'Tipo Empleado'
 
-class Empleado(db.Model):
-        id_empleado = db.Column(db.String, primary_key=True) # Es E-mail
-        dni = db.Column(db.Integer, nullable=False)
+class Empleado(db.Model, UserMixin):
+        id = db.Column(db.String, primary_key=True) # Es E-mail
+        dni = db.Column(db.Integer, unique=True, nullable=False)
         username = db.Column(db.String, nullable=False)
         fecha_nacimiento = db.Column(db.Date, nullable=False)
         telefono = db.Column(db.Integer, nullable=False)
@@ -35,7 +40,7 @@ class Historiaclinica(db.Model):
         antecedentes = db.Column(db.String, nullable=True)
         onicopatias = db.Column(db.String, nullable=True)
         otros_datos = db.Column(db.Text, nullable=True)
-        id_empleado = db.Column(db.Integer, db.ForeignKey('empleado.id_empleado'), nullable=False)
+        id_empleado = db.Column(db.Integer, db.ForeignKey('empleado.id'), nullable=False)
         id_cliente = db.Column(db.Integer, db.ForeignKey('cliente.id_cliente'), nullable=False)
         def __repr__(self):
                 return f'Historia Clinica'
@@ -64,7 +69,7 @@ class Turno(db.Model):
         disponible = db.Column(db.Boolean, nullable=False, default=True)
         atendido = db.Column(db.Boolean, nullable=False, default=False)
         id_hora = db.Column(db.Integer, db.ForeignKey('hora.id_hora'), nullable=False)
-        id_empleado = db.Column(db.Integer, db.ForeignKey('empleado.id_empleado'), nullable=False)
+        id_empleado = db.Column(db.String, db.ForeignKey('empleado.id'), nullable=False)
         id_cliente = db.Column(db.Integer, db.ForeignKey('cliente.id_cliente'), nullable=True)
         def __repr__(self):
                 return f'Turno'

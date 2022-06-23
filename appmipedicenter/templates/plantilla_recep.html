@@ -1,0 +1,72 @@
+{% extends "layout.html" %}
+{% block content %}
+    <table class="table">
+        {% for j in range(0, plantilla.cant_fila) %}
+            <tr>
+                {% if j == 0 %}
+                    {% for i in range(0, plantilla.cant_col) %}
+                            <th>{{ plantilla.matriz[j][i] }}</th>
+                    {% endfor %}
+                {% else %}
+                    {% for i in range(0, plantilla.cant_col) %}
+                            <td class="td-plantilla">
+                                {% if plantilla.matriz[j][i] == "No disponible" %}
+                                    <button type="button" class="boton-plantilla boton-plantilla-cliente-ocupado" data-bs-toggle="modal" data-bs-target="#deleteModal">No Disponible</button>
+                                {% elif (i%2!=0 and plantilla.matriz[j][i] != []) %}
+                                    <button type="button" class="boton-plantilla boton-plantilla-cliente-ocupado" data-bs-toggle="modal" data-bs-target="#deleteModal">{{ plantilla.matriz[j][i].username }}</button>
+                                {% elif (i%2!=0 and plantilla.matriz[j][i]) == [] %}
+                                    <button type="button" class="boton-plantilla boton-plantilla-cliente-vacio" data-bs-toggle="modal" data-bs-target="#deleteModal">{{ plantilla.matriz[j][i].username }}</button>
+                                {% elif i == 0 %}       
+                                    {{ plantilla.matriz[j][i] }}
+                                {% elif (plantilla.matriz[j][i] == "No" or plantilla.matriz[j][i] == "Si") %}
+                                    <button type="button" class="boton-plantilla boton-plantilla-atendido">{{ plantilla.matriz[j][i] }}</button>
+                                {% else %}
+                                    
+                                {% endif %}
+                                
+                            </td>
+                    {% endfor %} 
+                {% endif %}
+            </tr>
+        {% endfor %}
+    </table> 
+    
+{% endblock content %}
+{% block script %}
+    <!-- Modal -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="deleteModalLabel">Modal title</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+            Delete Modal!
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+        </div>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="roberto" tabindex="-1" aria-labelledby="robertoLabel" aria-hidden="true">
+        <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+            <h5 class="modal-title" id="robertoLabel">BOTON DE PRUEBA</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                Has apretado el boton de prueba
+            </div>
+            <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="button" class="btn btn-primary">Guardar Cambios</button>
+            </div>
+        </div>
+        </div>
+    </div>
+{% endblock script %}
