@@ -3,7 +3,7 @@ from flask_wtf import FlaskForm
 from flask_login import current_user
 from wtforms import StringField, SubmitField, IntegerField, DateField, PasswordField, BooleanField, SelectField
 from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
-from appmipedicenter.models import Empleado
+from appmipedicenter.models import Empleado, Cliente
 
 class RegistrationForm(FlaskForm):
     username = StringField('Nombre Completo', validators=[DataRequired()])
@@ -61,4 +61,22 @@ class ClienteForm(FlaskForm):
     email = StringField('E-Mail', validators=[DataRequired(), Email()])
     fecha_nacimiento = DateField('Fecha Nacimiento YYYY-MM-DD', validators=[DataRequired()])
     telefono = IntegerField('Nro de Telefono (solo carácteres numéricos)', validators=[DataRequired()])
+    submit = SubmitField('Crear')
 
+    def validate_dni(self, dni):
+        cliente = Cliente.query.filter_by(id_cliente = dni.data).first()
+        if cliente:
+            raise ValidationError("El DNI ya esta en uso")
+    
+    def validate_email(self, email):
+        cliente = Cliente.query.filter_by(email = email.data).first()
+        if cliente:
+            raise ValidationError("El Email ya esta en uso")
+
+class ClienteUpdateForm(FlaskForm):
+    dni = IntegerField('DNI', validators=[DataRequired()])
+    username = StringField('Nombre Completo', validators=[DataRequired()])
+    email = StringField('E-Mail', validators=[DataRequired(), Email()])
+    fecha_nacimiento = DateField('Fecha Nacimiento YYYY-MM-DD', validators=[DataRequired()])
+    telefono = IntegerField('Nro de Telefono (solo carácteres numéricos)', validators=[DataRequired()])
+    submit = SubmitField('Modificar')

@@ -80,7 +80,6 @@ class Plantilla:
         for j in range(1, cant_horarios+1):
             for i in range(0, cant_podologos):
                 if(Turno.query.filter_by(id_hora = j, id_empleado = lista_podologos[i].id, date = self.date).first() == None):
-                    print("tumadre")
                     turno = Turno(date = self.date,
                         disponible = True,
                         atendido = False,

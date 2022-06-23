@@ -1,0 +1,127 @@
+{% extends "layout.html" %}
+{% block header %}
+    <script src='../static/js/jquery-3.6.0.min.js'></script>
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.css">
+    
+    
+{% endblock header %}
+{% block content %}
+    <div class="row ${1| ,row-cols-2,row-cols-3, auto,justify-content-md-center,|}">
+        <h2>Gestion de Pacientes</h2>
+    </div>
+    <div class="row ${1| ,row-cols-2,row-cols-3, auto,justify-content-md-center,|}">
+        <div class = "col-md-4">
+            <div class = "card card-body">
+                <form method="POST" action="">
+                    {{ form.hidden_tag() }}
+                    <div class="form-group">
+                        {{ form.username.label(class="form-control-label") }}
+                        {% if form.username.errors %}
+                            {{ form.username(class="form-control form-control-lg is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.username.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.username(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        {{ form.dni.label(class="form-control-label") }}
+                        {% if form.dni.errors %}
+                            {{ form.dni(class="form-control form-control-lg is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.dni.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                                </div>
+                        {% else %}
+                            {{ form.dni(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        {{ form.fecha_nacimiento.label(class="form-control-label") }}
+                        {% if form.fecha_nacimiento.errors %}
+                            {{ form.fecha_nacimiento(class="form-control form-control-lg is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.fecha_nacimiento.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.fecha_nacimiento(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        {{ form.telefono.label(class="form-control-label") }}
+                        {% if form.telefono.errors %}
+                            {{ form.telefono(class="form-control form-control-lg is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.telefono.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.telefono(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        {{ form.email.label(class="form-control-label") }}
+                        {% if form.email.errors %}
+                            {{ form.email(class="form-control form-control-lg is-invalid") }}
+                            <div class="invalid-feedback">
+                                {% for error in form.email.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.email(class="form-control form-control-lg") }}
+                        {% endif %}
+                    </div>
+                    <p></p>
+                    <div class="form-group">
+                        {{ form.submit(class="btn btn-outline-info") }}
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <table id="tablaclientes" class = "table">
+                <thead>
+                    <tr>
+                        <th>DNI</th>
+                        <th>Nombre</th>
+                        <th>Email</th>
+                        <th>Fecha Nacimiento</th>
+                        <th>Telefono</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for i in clientes %}
+                    <tr>
+                        <td>{{i.id_cliente}}</td>
+                        <td>{{i.username}}</td>
+                        <td>{{i.email}}</td>
+                        <td>{{i.fecha_nacimiento}}</td>  
+                        <td>{{i.telefono}}</td>
+                        <td width = "130"> 
+                            <a href="{{ url_for('editar_clientes', id_cliente = i.id_cliente) }}" class = "btn btn-secondary btn-sm">Editar</a>
+                            <a href="{{ url_for('eliminar_clientes', id_cliente = i.id_cliente) }}" class = "btn btn-danger btn-delete btn-sm">Eliminar</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock content %}
+{% block script %}
+<script>
+    $(document).ready( function () {
+        $('#tablaclientes').DataTable();
+    } );
+</script>
+{% endblock script %}

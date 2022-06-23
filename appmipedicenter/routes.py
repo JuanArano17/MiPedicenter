@@ -1,7 +1,8 @@
+from http.client import REQUEST_HEADER_FIELDS_TOO_LARGE
 import json
 from flask import render_template, url_for, flash, redirect, request
 from appmipedicenter.models import *
-from appmipedicenter.forms import RegistrationForm, LoginForm, UpdateAccountForm
+from appmipedicenter.forms import RegistrationForm, LoginForm, UpdateAccountForm, ClienteForm, ClienteUpdateForm
 from Plantilla import Plantilla
 from appmipedicenter import app, bcrypt, db
 from flask_login import login_user, current_user, logout_user, login_required
@@ -91,3 +92,71 @@ def plantilla_turnos(date_str):
                 return render_template('plantilla_podologo.html', title="Calendario Vista Podologo", plantilla=plantilla)
         elif (current_user.id_tipo == 2):
                 return render_template('plantilla_recep.html', title="Calendario Vista Recepcionista", plantilla=plantilla) 
+
+@app.route("/clientes", methods=['GET', 'POST'])
+@login_required
+def clientes():
+        if current_user.is_authenticated:
+                if current_user.id_tipo == 2: 
+                        client_list = Cliente.query.all()
+                        form = ClienteForm()
+                        if form.validate_on_submit():
+                                cliente = Cliente(
+                                        id_cliente = form.dni.data,
+                                        username = form.username.data,
+                                        email = form.email.data,
+                                        fecha_nacimiento = form.fecha_nacimiento.data,
+                                        telefono = form.telefono.data
+                                )
+                                db.session.add(cliente)
+                                db.session.commit()
+                                flash(f'El cliente {form.username.data} ha sido ingresado/a con exito.', 'success')
+                                return redirect(url_for('clientes'))
+                        return render_template('clientes.html', title="Gestion de Pacientes", clientes = client_list, form=form) 
+                else:
+                        return redirect(url_for('home'))
+        else:
+                return redirect(url_for('login'))
+
+@app.route("/clientes/editar/<int:id_cliente>", methods=['GET', 'POST'])
+@login_required
+def editar_clientes(id_cliente):
+        if current_user.is_authenticated:
+                if current_user.id_tipo == 2: 
+                        client = Cliente.query.filter_by(id_cliente = id_cliente).first()
+                        form = ClienteUpdateForm()
+                        if form.validate_on_submit():
+                                client.id_cliente = form.dni.data
+                                client.username = form.username.data
+                                client.email = form.email.data
+                                client.fecha_nacimiento = form.fecha_nacimiento.data
+                                client.telefono = form.telefono.data
+                                db.session.commit()
+                                flash(f'Los datos de {form.username.data} han sido actualizados.', 'success')
+                                return redirect(url_for('clientes'))
+                        elif request.method=='GET':
+                                form.username.data = client.username
+                                form.dni.data = client.id_cliente
+                                form.email.data = client.email
+                                form.telefono.data = client.telefono
+                                form.fecha_nacimiento.data = client.fecha_nacimiento 
+                        return render_template('editar_cliente.html', title="Edicion de Clientes", form=form)
+                else:
+                        return redirect(url_for('home'))
+        else:
+                return redirect(url_for('login'))
+                
+@app.route("/clientes/eliminar/<int:id_cliente>", methods=['GET', 'POST'])
+@login_required
+def eliminar_clientes(id_cliente):
+        if current_user.is_authenticated:
+                if current_user.id_tipo == 2: 
+                        cliente = Cliente.query.filter_by(id_cliente = id_cliente).first()
+                        Cliente.query.filter_by(id_cliente = id_cliente).delete()
+                        db.session.commit()
+                        flash(f'Los datos de {cliente.username} han sido borrados.', 'success')
+                        return redirect(url_for('clientes'))
+                else:
+                        return redirect(url_for('home'))
+        else:
+                return redirect(url_for('login'))
