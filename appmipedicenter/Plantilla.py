@@ -36,7 +36,7 @@ class Plantilla:
         lista_empleados = Empleado.query.filter_by(id_tipo=1).all() # Empleados que son podologos
         j = 1
         for i in range(0, Empleado.query.filter_by(id_tipo=1).count()):
-            self.matriz[0][j] = lista_empleados[i].username
+            self.matriz[0][j] = lista_empleados[i]
             self.matriz[0][j+1] = "Atendido"
             j = j+2
 
@@ -48,7 +48,7 @@ class Plantilla:
             # Obtener la columna del podologo en espefico
             emp = Empleado.query.filter_by(id = lista_turnos_dia[i].id_empleado).first()
             for j in range(0, self.cant_col):
-                if(self.matriz[0][j] == emp.username):
+                if(self.matriz[0][j] == emp):
                     columna = j
             
             # Obtener la fila del horario
@@ -88,7 +88,6 @@ class Plantilla:
                         )
                     db.session.add(turno)
                     db.session.commit()
-                
 
 
     #Utiliza las tres funciones anteriores, para setear la matriz con los datos necesarios.

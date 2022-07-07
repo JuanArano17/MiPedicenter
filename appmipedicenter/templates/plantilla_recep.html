@@ -5,7 +5,11 @@
             <tr>
                 {% if j == 0 %}
                     {% for i in range(0, plantilla.cant_col) %}
+                        {% if (i%2!=0) %}
+                            <th>{{ plantilla.matriz[j][i].username }}</th>
+                        {% else %}
                             <th>{{ plantilla.matriz[j][i] }}</th>
+                        {% endif %}
                     {% endfor %}
                 {% else %}
                     {% for i in range(0, plantilla.cant_col) %}
@@ -14,7 +18,7 @@
                                     <button type="button" class="boton-plantilla boton-plantilla-cliente-no-diponible" data-bs-toggle="modal" data-bs-target="#cambioDisponibilidad">No Disponible</button>
                                 {% elif (i%2!=0) %} 
                                     {% if plantilla.matriz[j][i] != "" %}
-                                        <button type="button" class="boton-plantilla boton-plantilla-cliente-ocupado" data-bs-toggle="modal" data-bs-target="#eliminarTurno"> MANOLETE {{ plantilla.matriz[j][i].username }}</button>
+                                        <button type="button" class="boton-plantilla boton-plantilla-cliente-ocupado" data-bs-toggle="modal" data-bs-target="#eliminarTurno"> {{ plantilla.matriz[j][i] }}</button>
                                     {% else %}
                                         <button type="button" class="boton-plantilla boton-plantilla-cliente-vacio" data-bs-toggle="modal" data-bs-target="#crearTurno">{{ plantilla.matriz[j][i].username }}</button>
                                     {% endif %}
@@ -34,7 +38,7 @@
     
 {% endblock content %}
 {% block script %}
-    <!-- Modal -->
+    <!-- Modal DISPONIBILIDAD-->
     <div class="modal fade" id="cambioDisponibilidad" tabindex="-1" aria-labelledby="cambioDisponibilidadLabel" aria-hidden="true">
         <div class="modal-dialog">
         <div class="modal-content">
@@ -52,6 +56,7 @@
         </div>
         </div>
     </div>
+    <!-- Modal ELIMINAR TURNO -->
     <div class="modal fade" id="eliminarTurno" tabindex="-1" aria-labelledby="eliminarTurnoLabel" aria-hidden="true">
         <div class="modal-dialog">
         <div class="modal-content">
@@ -69,19 +74,36 @@
         </div>
         </div>
     </div>
+    <!-- Modal CREAR TURNO -->
     <div class="modal fade" id="crearTurno" tabindex="-1" aria-labelledby="crearTurnoLabel" aria-hidden="true">
         <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="crearTurnoLabel">Modal title</h5>
+                <h5 class="modal-title" id="crearTurnoLabel">Asignar Turno</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                Delete Modal!
+                    {{ form_crear_turno.ivalor = i }}
+                    {{ form_crear_turno.jvalor = j }}
+                <div class="form-group">
+                    {{ form_crear_turno.dni.label(class="form-control-label") }}
+                    {% if form_crear_turno.dni.errors %}
+                        {{ form_crear_turno.dni(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form_crear_turno.dni.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form_crear_turno.dni(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-primary">Guardar Cambios</button>
+                <div class="form-group">
+                    {{ form_crear_turno.submit(class="btn btn-outline-info") }}
+                </div>
             </div>
         </div>
         </div>

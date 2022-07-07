@@ -2,8 +2,8 @@ from http.client import REQUEST_HEADER_FIELDS_TOO_LARGE
 import json
 from flask import render_template, url_for, flash, redirect, request
 from appmipedicenter.models import *
-from appmipedicenter.forms import RegistrationForm, LoginForm, UpdateAccountForm, ClienteForm, ClienteUpdateForm
-from Plantilla import Plantilla
+from appmipedicenter.forms import RegistrationForm, LoginForm, UpdateAccountForm, ClienteForm, ClienteUpdateForm, AsignarTurno
+from appmipedicenter.Plantilla import Plantilla
 from appmipedicenter import app, bcrypt, db
 from flask_login import login_user, current_user, logout_user, login_required
 from datetime import *
@@ -91,7 +91,14 @@ def plantilla_turnos(date_str):
         if (current_user.id_tipo == 1):     #Incluye CRUD Turnos, Disp Horario e Historias Clinicas
                 return render_template('plantilla_podologo.html', title="Calendario Vista Podologo", plantilla=plantilla)
         elif (current_user.id_tipo == 2):
-                return render_template('plantilla_recep.html', title="Calendario Vista Recepcionista", plantilla=plantilla) 
+                form_crear_turno = AsignarTurno()
+                if form_crear_turno.validate_on_submit():
+                        turno = Turno.query.filter_by(id_hora = form_crear_turno.ivalor , id_empleado = plantilla[0][form_crear_turno.jvalor], date = datePlant).first()
+                        turno.id_cliente = form_crear_turno.dni.data
+                        db.session.commit()
+                        flash('Se ha asignado el turno con exito', 'success')
+                        return redirect(url_for("plantilla_turnos", date_str = date_str))
+                return render_template('plantilla_recep.html', title="Calendario Vista Recepcionista", plantilla=plantilla, form_crear_turno=form_crear_turno) 
 
 @app.route("/clientes", methods=['GET', 'POST'])
 @login_required

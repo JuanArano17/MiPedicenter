@@ -80,3 +80,14 @@ class ClienteUpdateForm(FlaskForm):
     fecha_nacimiento = DateField('Fecha Nacimiento YYYY-MM-DD', validators=[DataRequired()])
     telefono = IntegerField('Nro de Telefono (solo carácteres numéricos)', validators=[DataRequired()])
     submit = SubmitField('Modificar')
+
+class AsignarTurno(FlaskForm):
+    dni = IntegerField('DNI', validators=[DataRequired()])
+    ivalor = 0
+    jvalor = 0
+    submit = SubmitField('Guardar Turno')
+
+    def validate_dni(self, dni):
+        cliente = Cliente.query.filter_by(id_cliente = dni.data).first()
+        if not cliente:
+            raise ValidationError("El cliente no esta registrado.")
