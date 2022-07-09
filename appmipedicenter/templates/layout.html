@@ -30,10 +30,10 @@
                         <a class="nav-item nav-link" href="{{ url_for('home') }}">Home</a>
                         {% if current_user.is_authenticated %}
                             <a class="nav-item nav-link" href="{{ url_for('mi_perfil') }}">MiPerfil</a>
-                            <a class="nav-item nav-link" href="{{ url_for('mi_calendario') }}">MiCalendario</a>
                             {% if current_user.id_tipo == 2 %}
-                                <a class="nav-item nav-link" href="{{ url_for('clientes') }}">Pacientes</a>
+                                <a class="nav-item nav-link" href="{{ url_for('pacientes') }}">Pacientes</a>
                             {% endif %}
+                            <a class="nav-item nav-link" href="{{ url_for('mi_calendario') }}">MiCalendario</a>
                         {% endif %}
                     </div>
                 </div>

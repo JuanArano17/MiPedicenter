@@ -1,10 +1,10 @@
 {% extends "layout.html" %}
 {% block content %}
+    <h1>Perfil de {{ current_user.username }}</h1>
     <div class="content-section col-md-8">
         <div class="media">
             <div class="media-body">
-                <h2 class="account-heading">{{ current_user.username }}</h2>
-                <p class="text-secondary">{{ current_user.id }}</p>
+                <h5 class="text-secondary"> {{ current_user.id }} - {{ cuenta_tipo.nombre }}</h5>
             </div>
         </div>
         <form method="POST" action="" enctype="multipart/form-data">
@@ -22,19 +22,6 @@
                         </div>
                     {% else %}
                         {{ form.username(class="form-control form-control-lg") }}
-                    {% endif %}
-                </div>
-                <div class="form-group">
-                    {{ form.email.label(class="form-control-label") }}
-                    {% if form.email.errors %}
-                        {{ form.email(class="form-control form-control-lg is-invalid") }}
-                        <div class="invalid-feedback">
-                            {% for error in form.email.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        {{ form.email(class="form-control form-control-lg") }}
                     {% endif %}
                 </div>
                 <div class="form-group">
@@ -81,6 +68,10 @@
             <div class="form-group">
                 {{ form.submit(class="btn btn-outline-info") }}
             </div>
+        </form>
+        <p></p>
+        <form action="{{ url_for('eliminar_cuenta', id = current_user.id) }}" method="POST">
+            <input class="btn btn-danger" type="submit" value="Eliminar Cuenta">
         </form>
     </div>
 {% endblock content %}

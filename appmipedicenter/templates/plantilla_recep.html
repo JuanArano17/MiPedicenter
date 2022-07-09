@@ -1,42 +1,94 @@
 {% extends "layout.html" %}
 {% block content %}
-    <table class="table">
-        {% for j in range(0, plantilla.cant_fila) %}
-            <tr>
-                {% if j == 0 %}
-                    {% for i in range(0, plantilla.cant_col) %}
-                        {% if (i%2!=0) %}
-                            <th>{{ plantilla.matriz[j][i].username }}</th>
-                        {% else %}
-                            <th>{{ plantilla.matriz[j][i] }}</th>
-                        {% endif %}
-                    {% endfor %}
-                {% else %}
-                    {% for i in range(0, plantilla.cant_col) %}
-                            <td class="td-plantilla">
-                                {% if plantilla.matriz[j][i] == "No disponible" %}
-                                    <button type="button" class="boton-plantilla boton-plantilla-cliente-no-diponible" data-bs-toggle="modal" data-bs-target="#cambioDisponibilidad">No Disponible</button>
-                                {% elif (i%2!=0) %} 
-                                    {% if plantilla.matriz[j][i] != "" %}
-                                        <button type="button" class="boton-plantilla boton-plantilla-cliente-ocupado" data-bs-toggle="modal" data-bs-target="#eliminarTurno"> {{ plantilla.matriz[j][i] }}</button>
-                                    {% else %}
-                                        <button type="button" class="boton-plantilla boton-plantilla-cliente-vacio" data-bs-toggle="modal" data-bs-target="#crearTurno">{{ plantilla.matriz[j][i].username }}</button>
-                                    {% endif %}
-                                {% elif i == 0 %}       
-                                    {{ plantilla.matriz[j][i] }}
-                                {% elif (plantilla.matriz[j][i] == "No" or plantilla.matriz[j][i] == "Si") %}
-                                    <button type="button" class="boton-plantilla boton-plantilla-atendido">{{ plantilla.matriz[j][i] }}</button>
+    <div class="row">
+        <div class="col-sm-10">
+            <table class="table">
+                {% for j in range(0, plantilla.cant_fila) %}
+                    <tr>
+                        {% if j == 0 %}
+                            {% for i in range(0, plantilla.cant_col) %}
+                                {% if (i%2!=0) %}
+                                    <th>{{ plantilla.matriz[j][i].username }}</th>
                                 {% else %}
-                                    
+                                    <th>{{ plantilla.matriz[j][i] }}</th>
                                 {% endif %}
-                            </td>
-                    {% endfor %} 
-                {% endif %}
-            </tr>
-        {% endfor %}
-    </table> 
-    
+                            {% endfor %}
+                        {% else %}
+                            {% for i in range(0, plantilla.cant_col) %}
+                                    <td class="td-plantilla">
+                                        {% if plantilla.matriz[j][i] == "No disponible" %}
+                                            <button type="button" class="boton-plantilla boton-plantilla-cliente-no-diponible" data-bs-toggle="modal" data-bs-target="#cambioDisponibilidad">No Disponible</button>
+                                        {% elif (i%2!=0) %} 
+                                            {% if plantilla.matriz[j][i] != "" %}
+                                                <button type="button" class="boton-plantilla boton-plantilla-cliente-ocupado" data-bs-toggle="modal" data-bs-target="#eliminarTurno"> {{ plantilla.matriz[j][i].username }}</button>
+                                            {% else %}
+                                                <button type="button" class="boton-plantilla boton-plantilla-cliente-vacio" data-bs-toggle="modal" data-bs-target="#crearTurno">{{ plantilla.matriz[j][i] }}</button>
+                                            {% endif %}
+                                        {% elif i == 0 %}       
+                                            {{ plantilla.matriz[j][i] }}
+                                        {% elif (plantilla.matriz[j][i] == "No" or plantilla.matriz[j][i] == "Si") %}
+                                            <button type="button" class="boton-plantilla boton-plantilla-atendido">{{ plantilla.matriz[j][i] }}</button>
+                                        {% else %}
+                                            
+                                        {% endif %}
+                                    </td>
+                            {% endfor %} 
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+            </table> 
+        </div>
+        <div class="col-2 card card-body">
+            <form method="POST" action="">
+                {{ form_crear_turno.hidden_tag() }}
+                <div class="form-group">
+                    {{ form_crear_turno.dni.label(class="form-control-label") }}
+                    {% if form_crear_turno.dni.errors %}
+                        {{ form_crear_turno.dni(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form_crear_turno.dni.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form_crear_turno.dni(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ form_crear_turno.id_hora.label(class="form-control-label") }}
+                    {% if form_crear_turno.id_hora.errors %}
+                        {{ form_crear_turno.id_hora(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form_crear_turno.id_hora.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form_crear_turno.id_hora(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    {{ form_crear_turno.id_podologo.label(class="form-control-label") }}
+                    {% if form_crear_turno.id_podologo.errors %}
+                        {{ form_crear_turno.id_podologo(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form_crear_turno.id_podologo.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form_crear_turno.id_podologo(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <p></p>
+                <div class="form-group">
+                    {{ form_crear_turno.submitUpdate(class="btn btn-outline-info") }}
+                </div>
+            </form>
+        </div>
+    </div>
 {% endblock content %}
+
 {% block script %}
     <!-- Modal DISPONIBILIDAD-->
     <div class="modal fade" id="cambioDisponibilidad" tabindex="-1" aria-labelledby="cambioDisponibilidadLabel" aria-hidden="true">
@@ -59,53 +111,19 @@
     <!-- Modal ELIMINAR TURNO -->
     <div class="modal fade" id="eliminarTurno" tabindex="-1" aria-labelledby="eliminarTurnoLabel" aria-hidden="true">
         <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="eliminarTurnoLabel">Modal title</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                Delete Modal!
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                <button type="button" class="btn btn-primary">Guardar Cambios</button>
-            </div>
-        </div>
-        </div>
-    </div>
-    <!-- Modal CREAR TURNO -->
-    <div class="modal fade" id="crearTurno" tabindex="-1" aria-labelledby="crearTurnoLabel" aria-hidden="true">
-        <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="crearTurnoLabel">Asignar Turno</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                    {{ form_crear_turno.ivalor = i }}
-                    {{ form_crear_turno.jvalor = j }}
-                <div class="form-group">
-                    {{ form_crear_turno.dni.label(class="form-control-label") }}
-                    {% if form_crear_turno.dni.errors %}
-                        {{ form_crear_turno.dni(class="form-control form-control-lg is-invalid") }}
-                        <div class="invalid-feedback">
-                            {% for error in form_crear_turno.dni.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        {{ form_crear_turno.dni(class="form-control form-control-lg") }}
-                    {% endif %}
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="eliminarTurnoLabel">Modal title</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Delete Modal!
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    <button type="button" class="btn btn-primary">Guardar Cambios</button>
                 </div>
             </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                <div class="form-group">
-                    {{ form_crear_turno.submit(class="btn btn-outline-info") }}
-                </div>
-            </div>
-        </div>
         </div>
     </div>
 {% endblock script %}

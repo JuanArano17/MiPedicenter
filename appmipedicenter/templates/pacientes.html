@@ -109,8 +109,8 @@
                         <td>{{i.fecha_nacimiento}}</td>  
                         <td>{{i.telefono}}</td>
                         <td width = "130"> 
-                            <a href="{{ url_for('editar_clientes', id_cliente = i.id_cliente) }}" class = "btn btn-secondary btn-sm">Editar</a>
-                            <a href="{{ url_for('eliminar_clientes', id_cliente = i.id_cliente) }}" class = "btn btn-danger btn-delete btn-sm">Eliminar</a>
+                            <a href="{{ url_for('editar_pacientes', id_cliente = i.id_cliente) }}" class = "btn btn-secondary btn-sm">Editar</a>
+                            <a href="{{ url_for('eliminar_pacientes', id_cliente = i.id_cliente) }}" class = "btn btn-danger btn-delete btn-sm">Eliminar</a>
                         </td>
                     </tr>
                     {% endfor %}
