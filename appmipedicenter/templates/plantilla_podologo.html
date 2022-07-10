@@ -20,7 +20,7 @@
                                             <a href="{{ url_for('cambio_disponibilidad', date_str = plantilla.date_str, j=j, i=i) }}" class = "boton-plantilla boton-plantilla-cliente-no-diponible" style='text-decoration:none;color:black'>No Disponible</a>
                                         {% elif i == 1 %} 
                                             {% if matriz[j][i] != "" %}
-                                                <a href="{{ url_for('gestion_elimiar_turno', date_str=plantilla.date_str, j=j, i=i)}}" class="boton-plantilla boton-plantilla-cliente" style='text-decoration:none;color:black'> {{ matriz[j][i].username }}</button>
+                                                <a href="{{ url_for('historias_clinicas', id_cliente = matriz[j][i].id_cliente)}}" class="boton-plantilla boton-plantilla-cliente" style='text-decoration:none;color:black'> {{ matriz[j][i].username }}</button>
                                             {% else %}
                                                 <a href="{{ url_for('cambio_disponibilidad', date_str=plantilla.date_str, j=j, i=i)}}" class="boton-plantilla boton-plantilla-cliente" style='text-decoration:none;color:black'>Disponible</a>
                                             {% endif %}

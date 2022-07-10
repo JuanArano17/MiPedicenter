@@ -1,7 +1,8 @@
+from datetime import date, datetime
 import email
 from flask_wtf import FlaskForm
 from flask_login import current_user
-from wtforms import StringField, SubmitField, IntegerField, DateField, PasswordField, BooleanField, SelectField
+from wtforms import StringField, SubmitField, IntegerField, DateField, PasswordField, BooleanField, SelectField, TextAreaField
 from wtforms.validators import DataRequired, Email, EqualTo, ValidationError
 from appmipedicenter.models import Empleado, Cliente
 
@@ -98,8 +99,10 @@ class AsignarTurno(FlaskForm):
         if not bool(cliente):
             raise ValidationError("El cliente no esta registrado.")
 
-
-class ijPlantillaForm(FlaskForm):
-    i = IntegerField('i', validators=[DataRequired()])
-    j = IntegerField('j', validators=[DataRequired()])
-    submit = SubmitField('Aceptar')
+class HistoriaClinicaForm(FlaskForm):
+    diagnostico = TextAreaField('Diagnostico General', validators=[DataRequired()])
+    diabetes = BooleanField('¿Posee diabetes?')
+    antecedentes = StringField('Antecedentes')
+    onicopatias = StringField('Onicopatias')
+    otros_datos = StringField('Otros datos')
+    submit = SubmitField('Guardar')

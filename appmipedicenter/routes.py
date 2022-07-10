@@ -3,7 +3,7 @@ from http.client import REQUEST_HEADER_FIELDS_TOO_LARGE
 import json
 from flask import render_template, url_for, flash, redirect, request
 from appmipedicenter.models import *
-from appmipedicenter.forms import ijPlantillaForm, RegistrationForm, LoginForm, UpdateAccountForm, ClienteForm, ClienteUpdateForm, AsignarTurno
+from appmipedicenter.forms import HistoriaClinicaForm, RegistrationForm, LoginForm, UpdateAccountForm, ClienteForm, ClienteUpdateForm, AsignarTurno, HistoriaClinicaForm
 from appmipedicenter.Plantilla import Plantilla
 from appmipedicenter import app, bcrypt, db, mail
 from flask_login import login_user, current_user, logout_user, login_required
@@ -137,7 +137,9 @@ def turno_disponible(date_str, j, i):
                                 db.session.commit()
                                 flash('Se ha asignado el turno con exito', 'success')
                                 cliente = Cliente.query.filter_by(id_cliente = form_crear_turno.dni.data).first()
-                                mandar_mail_turno(cliente, date_str)
+                                nombre_empleado = Empleado.query.filter_by(id = id_empleado).first().username
+                                hora = Hora.query.filter_by(id_hora = id_hora).first().hora
+                                mandar_mail_turno(cliente, date_str, hora, nombre_empleado)
                                 return redirect(url_for("plantilla_turnos", date_str = date_str))
                         return render_template('opciones_turno_disponible.html', title="Opciones para turno disponible", form_crear_turno=form_crear_turno, date_str=date_str, i=i, j=j)
 
@@ -274,11 +276,11 @@ def eliminar_pacientes(id_cliente):
         else:
                 return redirect(url_for('login'))
 
-def mandar_mail_turno(cliente, date_str):
+def mandar_mail_turno(cliente, date_str, hora, nombre_empleado):
         msg = Message('Confirmacion de turno Pedicenter', sender='mipedicenter@gmail.com', recipients=[cliente.email])
-        msg.body = f''' Felicitaciones!!
+        msg.body = f''' Estimado/a {cliente.username}:
 
-        Un turno podologico ha sido asignado exitosamente para el dia {date_str} en la sede Arenales 1283 PB.
+ Un turno podologico ha sido asignado exitosamente para el dia {date_str} a las {hora}hs con {nombre_empleado} en la sede: Arenales-1283-PB-Recoleta .
         
         Att: Pedicenter.'''
         mail.send(msg)
@@ -286,8 +288,71 @@ def mandar_mail_turno(cliente, date_str):
 @app.route("/historias-clinicas/<int:id_cliente>", methods=['GET', 'POST'])
 @login_required
 def historias_clinicas(id_cliente):
-        cliente = Cliente.query(id_cliente = id_cliente)
-        historias_clinicas = Historiaclinica.query.filter_by(id_cliente = cliente.id_cliente).all()
+        cliente = Cliente.query.filter_by(id_cliente = id_cliente).first()
+        historias_clinicas = Historiaclinica.query.filter_by(id_cliente = id_cliente).all()
+        form = HistoriaClinicaForm() 
+        if current_user.is_authenticated and current_user.id_tipo == 1:
+                title_str = "Historial de "+ cliente.username 
+                lista_podologos = Empleado.query.filter_by(id_tipo = 1).all()
+                if form.validate_on_submit():
+                        fecha_hoy = datetime.now()
+                        historia = Historiaclinica(
+                                datetime = fecha_hoy,
+                                diagnostico = form.diagnostico.data,
+                                diabetes = form.diabetes.data,
+                                antecedentes = form.antecedentes.data,
+                                onicopatias = form.onicopatias.data,
+                                otros_datos = form.otros_datos.data,
+                                id_empleado = current_user.id,
+                                id_cliente = id_cliente
+                        )
+                        db.session.add(historia)
+                        db.session.commit()
+                        return redirect(url_for('historias_clinicas', id_cliente=id_cliente))
+                return render_template('historias_clinicas.html', title=title_str, cliente=cliente, historias_clinicas=historias_clinicas, form=form, lista_podologos = lista_podologos)
+        return redirect(url_for('home'))
+
+@app.route("/historias-clinicas/eliminar/<int:id_historia>", methods=['GET', 'POST'])
+@login_required
+def eliminar_historia(id_historia):
         if current_user.is_authenticated:
                 if current_user.id_tipo == 1: 
-                        return render_template(url_for('historias_clinicas.html', title=f"Historial de {cliente.username}", cliente=cliente, historias_clinicas=historias_clinicas))
+                        historia = Historiaclinica.query.filter_by(id_historia_clinica = id_historia).first()
+                        id_cliente = historia.id_cliente
+                        db.session.delete(historia)
+                        db.session.commit()
+                        flash('La historia clinica ha sido eliminada.', 'success')
+                        return redirect(url_for('historias_clinicas', id_cliente=id_cliente))
+                else:
+                        return redirect(url_for('home'))
+        else:
+                return redirect(url_for('login'))
+
+@app.route("/historias-clinicas/editar/<int:id_historia>", methods=['GET', 'POST'])
+@login_required
+def editar_historia(id_historia):
+        if current_user.is_authenticated:
+                if current_user.id_tipo == 1: 
+                        historia = Historiaclinica.query.filter_by(id_historia_clinica = id_historia).first()
+                        id_cliente = historia.id_cliente
+                        form = HistoriaClinicaForm()
+                        if form.validate_on_submit():
+                                historia.diagnostico = form.diagnostico.data
+                                historia.diabetes = form.diabetes.data
+                                historia.antecedentes = form.antecedentes.data
+                                historia.onicopatias = form.onicopatias.data
+                                historia.otros_datos = form.otros_datos.data
+                                db.session.commit()
+                                flash('Los datos de la historia clinica han sido actualizados.', 'success')
+                                return redirect(url_for('historias_clinicas', id_cliente=id_cliente))
+                        elif request.method=='GET':
+                                form.diagnostico.data =  historia.diagnostico
+                                form.diabetes.data = historia.diabetes
+                                form.antecedentes.data = historia.antecedentes
+                                form.onicopatias.data = historia.onicopatias
+                                form.otros_datos.data  =  historia.otros_datos
+                        return render_template('editar_historia_clinica.html', id_cliente=id_cliente, form=form)
+                else:
+                        return redirect(url_for('home'))
+        else:
+                return redirect(url_for('login'))

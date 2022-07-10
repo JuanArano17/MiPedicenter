@@ -8,7 +8,7 @@
 
 {% block content %}
     <div class="row ${1| ,row-cols-2,row-cols-3, auto,justify-content-md-center,|}">
-        <h2>Gestion de Pacientes</h2>
+        <h2>Gestion de historia clinica de {{ cliente.username }} - {{ cliente.id_cliente }}</h2>
     </div>
     <div class="row ${1| ,row-cols-2,row-cols-3, auto,justify-content-md-center,|}">
         <div class = "col-md-4">
@@ -16,68 +16,59 @@
                 <form method="POST" action="">
                     {{ form.hidden_tag() }}
                     <div class="form-group">
-                        {{ form.username.label(class="form-control-label") }}
-                        {% if form.username.errors %}
-                            {{ form.username(class="form-control form-control-lg is-invalid") }}
+                        {{ form.diagnostico.label(class="form-control-label") }}
+                        {% if form.diagnostico.errors %}
+                            {{ form.diagnostico(class="form-control form-control-lg is-invalid") }}
                             <div class="invalid-feedback">
-                                {% for error in form.username.errors %}
+                                {% for error in form.diagnostico.errors %}
                                     <span>{{ error }}</span>
                                 {% endfor %}
                             </div>
                         {% else %}
-                            {{ form.username(class="form-control form-control-lg") }}
+                            {{ form.diagnostico(class="form-control form-control-lg") }}
                         {% endif %}
                     </div>
                     <div class="form-group">
-                        {{ form.dni.label(class="form-control-label") }}
-                        {% if form.dni.errors %}
-                            {{ form.dni(class="form-control form-control-lg is-invalid") }}
-                            <div class="invalid-feedback">
-                                {% for error in form.dni.errors %}
-                                    <span>{{ error }}</span>
-                                {% endfor %}
-                                </div>
-                        {% else %}
-                            {{ form.dni(class="form-control form-control-lg") }}
-                        {% endif %}
+                        {{ form.diabetes.label(class="form-check-label") }}
+                        {{ form.diabetes(class="form-check-input") }}
                     </div>
                     <div class="form-group">
-                        {{ form.fecha_nacimiento.label(class="form-control-label") }}
-                        {% if form.fecha_nacimiento.errors %}
-                            {{ form.fecha_nacimiento(class="form-control form-control-lg is-invalid") }}
+                        {{ form.antecedentes.label(class="form-control-label") }}
+                        {% if form.antecedentes.errors %}
+                            {{ form.antecedentes(class="form-control form-control-lg is-invalid") }}
                             <div class="invalid-feedback">
-                                {% for error in form.fecha_nacimiento.errors %}
+                                {% for error in form.antecedentes.errors %}
                                     <span>{{ error }}</span>
                                 {% endfor %}
                             </div>
                         {% else %}
-                            {{ form.fecha_nacimiento(class="form-control form-control-lg") }}
+                            {{ form.antecedentes(class="form-control form-control-lg") }}
                         {% endif %}
                     </div>
                     <div class="form-group">
-                        {{ form.telefono.label(class="form-control-label") }}
-                        {% if form.telefono.errors %}
-                            {{ form.telefono(class="form-control form-control-lg is-invalid") }}
+                        {{ form.onicopatias.label(class="form-control-label") }}
+                        {% if form.onicopatias.errors %}
+                            {{ form.onicopatias(class="form-control form-control-lg is-invalid") }}
                             <div class="invalid-feedback">
-                                {% for error in form.telefono.errors %}
+                                {% for error in form.onicopatias.errors %}
                                     <span>{{ error }}</span>
                                 {% endfor %}
                             </div>
                         {% else %}
-                            {{ form.telefono(class="form-control form-control-lg") }}
+                            {{ form.onicopatias(class="form-control form-control-lg") }}
                         {% endif %}
                     </div>
                     <div class="form-group">
-                        {{ form.email.label(class="form-control-label") }}
-                        {% if form.email.errors %}
-                            {{ form.email(class="form-control form-control-lg is-invalid") }}
+                        {{ form.otros_datos.label(class="form-control-label") }}
+                        {% if form.otros_datos.errors %}
+                            {{ form.otros_datos(class="form-control form-control-lg is-invalid") }}
                             <div class="invalid-feedback">
-                                {% for error in form.email.errors %}
+                                {% for error in form.otros_datos.errors %}
                                     <span>{{ error }}</span>
                                 {% endfor %}
                             </div>
                         {% else %}
-                            {{ form.email(class="form-control form-control-lg") }}
+                            {{ form.otros_datos(class="form-control form-control-lg") }}
                         {% endif %}
                     </div>
                     <p></p>
@@ -88,29 +79,44 @@
             </div>
         </div>
         <div class="col-md-8">
-
             <table id="tablaclientes" class = "table">
                 <thead>
                     <tr>
-                        <th>DNI</th>
-                        <th>Nombre</th>
-                        <th>Email</th>
-                        <th>Fecha Nacimiento</th>
-                        <th>Telefono</th>
-                        <th>Acción</th>
+                        <th>Fecha</th>
+                        <th>Diagnostico</th>
+                        <th>Diabetes</th>
+                        <th>Antecedentes</th>
+                        <th>Onicopatias</th>
+                        <th>Otros Datos</th>
+                        <th>Podologo</th>
+                        <th>Edicion</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {% for i in clientes %}
+                    {% for i in historias_clinicas %}
                     <tr>
-                        <td>{{i.id_cliente}}</td>
-                        <td>{{i.username}}</td>
-                        <td>{{i.email}}</td>
-                        <td>{{i.fecha_nacimiento}}</td>  
-                        <td>{{i.telefono}}</td>
+                        <td>{{i.datetime}}</td>
+                        <td>{{i.diagnostico}}</td>
+                        <td>
+                            {% if i.diabetes %}
+                                Si
+                            {% else%}
+                                No
+                            {% endif %}
+                        </td>  
+                        <td>{{i.antecedentes}}</td>
+                        <td>{{i.onicopatias}}</td>
+                        <td>{{i.otros_datos}}</td>
+                        <td>
+                            {% for j in lista_podologos %}
+                                {% if j.id == i.id_empleado %}
+                                    {{ j.username }}
+                                {% endif %}
+                            {% endfor %}
+                        </td>
                         <td width = "130"> 
-                            <a href="{{ url_for('editar_pacientes', id_cliente = i.id_cliente) }}" class = "btn btn-secondary btn-sm">Editar</a>
-                            <a href="{{ url_for('eliminar_pacientes', id_cliente = i.id_cliente) }}" class = "btn btn-danger btn-delete btn-sm">Eliminar</a>
+                            <a href="{{ url_for('editar_historia', id_historia = i.id_historia_clinica) }}" class = "btn btn-secondary btn-sm">Editar</a>
+                            <a href="{{ url_for('eliminar_historia', id_historia = i.id_historia_clinica) }}" class = "btn btn-danger btn-delete btn-sm">Eliminar</a>
                         </td>
                     </tr>
                     {% endfor %}

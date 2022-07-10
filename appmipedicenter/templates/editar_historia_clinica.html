@@ -1,0 +1,68 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div class="content-section col-md-8">
+        <form method="POST" action="">
+            {{ form.hidden_tag() }}
+            <div class="form-group">
+                {{ form.diagnostico.label(class="form-control-label") }}
+                {% if form.diagnostico.errors %}
+                    {{ form.diagnostico(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.diagnostico.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.diagnostico(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.diabetes.label(class="form-check-label") }}
+                {{ form.diabetes(class="form-check-input") }}
+            </div>
+            <div class="form-group">
+                {{ form.antecedentes.label(class="form-control-label") }}
+                {% if form.antecedentes.errors %}
+                    {{ form.antecedentes(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.antecedentes.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.antecedentes(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.onicopatias.label(class="form-control-label") }}
+                {% if form.onicopatias.errors %}
+                    {{ form.onicopatias(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.onicopatias.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.onicopatias(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                {{ form.otros_datos.label(class="form-control-label") }}
+                {% if form.otros_datos.errors %}
+                    {{ form.otros_datos(class="form-control form-control-lg is-invalid") }}
+                    <div class="invalid-feedback">
+                        {% for error in form.otros_datos.errors %}
+                            <span>{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.otros_datos(class="form-control form-control-lg") }}
+                {% endif %}
+            </div>
+            <p></p>
+            <div class="form-group">
+                {{ form.submit(class="btn btn-outline-info") }}
+            </div>
+        </form>
+    </div>
+{% endblock content %}
