@@ -6,10 +6,11 @@ from appmipedicenter.models import Empleado, Hora, Turno, Cliente
 class Plantilla:
     def __init__(self, dia):
         self.date = dia
+        self.date_str = self.date.strftime("%Y-%m-%d")
         self.cant_col = 1 + 2*(Empleado.query.filter_by(id_tipo=1).count())
         self.cant_fila = 1 + Hora.query.count()
         self.matriz = [] # Matriz 
-        
+        self.matriz_podologo = []
         # Seteo de la matriz vacia
         for i in range(0, self.cant_fila):
             self.matriz.append([])
@@ -71,7 +72,6 @@ class Plantilla:
                     self.matriz[fila][columna+1] = "No"
             
             self.matriz[fila][columna] = cliente
-            # Ingresar si fue atendido o no
 
     def __crear_turnos_restantes(self):
         lista_podologos = Empleado.query.filter_by(id_tipo=1).all()
@@ -88,7 +88,51 @@ class Plantilla:
                         )
                     db.session.add(turno)
                     db.session.commit()
+    
+    def crear_matriz_podologo(self, podologo):
+        # Creacion de matriz podologo
+        for i in range(0, self.cant_fila):
+            self.matriz_podologo.append([])
+            for j in range(0, 3):
+                self.matriz_podologo[i].append([])
 
+        # Cargas estaticas
+        self.matriz_podologo[0][0] = "Hora"
+        self.matriz_podologo[0][1] = podologo
+        self.matriz_podologo[0][2] = "Atendido"
+
+        # Carga de horario
+        lista_horarios = Hora.query.all()
+        for i in range(1, Hora.query.count()+1):
+            self.matriz_podologo[i][0] = lista_horarios[i-1].hora
+
+        # Carga de turnos no existentes
+        for i in range(1, self.cant_fila):
+            if(Turno.query.filter_by(id_hora = i, id_empleado = podologo.id, date = self.date).first() == None):
+                turno = Turno(date = self.date,
+                    disponible = True,
+                    atendido = False,
+                    id_hora = i,
+                    id_empleado = podologo.id
+                )
+                db.session.add(turno)
+                db.session.commit()
+
+        # Carga de pacientes
+        for i in range(1, self.cant_fila):
+            turno = Turno.query.filter_by(id_empleado = podologo.id, date = self.date, id_hora = i).first()
+            if turno.disponible == False:
+                self.matriz_podologo[i][1] = "No disponible"
+            elif turno.id_cliente == None:
+                self.matriz_podologo[i][1] = ""
+                self.matriz_podologo[i][2] = ""
+            else:
+                cliente = Cliente.query.filter_by(id_cliente = turno.id_cliente).first()
+                self.matriz_podologo[i][1] = cliente
+                if(turno.atendido):
+                    self.matriz_podologo[i][2] = "Si"
+                else: 
+                    self.matriz_podologo[i][2] = "No"
 
     #Utiliza las tres funciones anteriores, para setear la matriz con los datos necesarios.
     def __cargar_info(self):
@@ -96,4 +140,3 @@ class Plantilla:
         self.__cargar_podologos()
         self.__cargar_horarios()
         self.__cargar_clientes()
-

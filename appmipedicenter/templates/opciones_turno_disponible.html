@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+{% block content %}
+    <h1>Gestion de Turno Disponible</h1>
+    <tr>
+        <div class="col-4 card card-body">
+            <form method="POST" action="">
+                {{ form_crear_turno.hidden_tag() }}
+                <div class="form-group">
+                    {{ form_crear_turno.dni.label(class="form-control-label") }}
+                    {% if form_crear_turno.dni.errors %}
+                        {{ form_crear_turno.dni(class="form-control form-control-lg is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% for error in form_crear_turno.dni.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form_crear_turno.dni(class="form-control form-control-lg") }}
+                    {% endif %}
+                </div>
+                <p></p>
+                <div class="form-group">
+                    {{ form_crear_turno.submit(class="btn btn-outline-info") }}
+                </div>
+            </form>
+        </div>
+        <p></p>
+        <div class="form-group col-4 card card-body">
+            <p>En caso de querer cambiar la disponibilidad del turno, haga click aquí</p>
+            <a href="{{ url_for('cambio_disponibilidad', date_str = date_str, j=j, i=i) }}" class = "btn btn-outline-info" style='text-decoration:none;color:black'>Cambiar a No Disponible</a>
+        </div>
+        <p></p>
+        <div class="form-group col-4 card card-body">
+            <a href="{{ url_for('plantilla_turnos', date_str = date_str) }}" class = "btn btn-outline-info" style='text-decoration:none;color:black'>Volver a Plantilla</a>
+        </div>
+    </tr>
+{% endblock content%}

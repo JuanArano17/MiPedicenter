@@ -1,8 +1,9 @@
+from asyncio.windows_events import NULL
 from http.client import REQUEST_HEADER_FIELDS_TOO_LARGE
 import json
 from flask import render_template, url_for, flash, redirect, request
 from appmipedicenter.models import *
-from appmipedicenter.forms import RegistrationForm, LoginForm, UpdateAccountForm, ClienteForm, ClienteUpdateForm, AsignarTurno
+from appmipedicenter.forms import ijPlantillaForm, RegistrationForm, LoginForm, UpdateAccountForm, ClienteForm, ClienteUpdateForm, AsignarTurno
 from appmipedicenter.Plantilla import Plantilla
 from appmipedicenter import app, bcrypt, db, mail
 from flask_login import login_user, current_user, logout_user, login_required
@@ -102,26 +103,101 @@ def mi_calendario():
                 return redirect(url_for("plantilla_turnos", date_str = date_str))
         return render_template('mi_calendario.html', title="Calendario Turnos") 
 
-@app.route("/plantilla-turnos/<string:date_str>", methods=['POST', 'GET'])
+
+@app.route("/plantilla-turnos/<string:date_str>", methods=['GET', 'POST'])
 @login_required
 def plantilla_turnos(date_str):
         if current_user.is_authenticated:
                 datePlant = date.fromisoformat(date_str)
                 plantilla = Plantilla(datePlant)
                 if (current_user.id_tipo == 1):     #Incluye CRUD Turnos, Disp Horario e Historias Clinicas
-                        return render_template('plantilla_podologo.html', title="Calendario Vista Podologo", plantilla=plantilla)
+                        podologo = Empleado.query.filter_by(id = current_user.id).first()
+                        plantilla.crear_matriz_podologo(podologo)
+                        return render_template('plantilla_podologo.html', title="Calendario Vista Podologo", matriz=plantilla.matriz_podologo, plantilla = plantilla)
                 elif (current_user.id_tipo == 2):
-                        form_crear_turno = AsignarTurno()
-                        if form_crear_turno.validate_on_submit():
-                                form_crear_turno.date = datePlant
-                                flash('Se ha asignado el turno con exito', 'success')
-                                turno = Turno.query.filter_by(date = form_crear_turno.date, id_empleado = form_crear_turno.id_podologo.data, id_hora = form_crear_turno.id_hora.data).first()
-                                turno.id_cliente = form_crear_turno.dni.data
-                                db.session.commit()
-                                return redirect(url_for("plantilla_turnos", date_str = date_str))
-                        return render_template('plantilla_recep.html', title="Calendario Vista Recepcionista", plantilla=plantilla, form_crear_turno=form_crear_turno)
+                        return render_template('plantilla_recep.html', title="Calendario Vista Recepcionista", plantilla=plantilla)
         else:
                 return redirect(url_for('home'))
+
+@app.route("/plantilla-turnos/turno-disponible<string:date_str>/<int:i>/<int:j>", methods=['GET', 'POST'])
+@login_required
+def turno_disponible(date_str, j, i):
+        if current_user.is_authenticated:
+                datePlant = date.fromisoformat(date_str)
+                plantilla = Plantilla(datePlant)
+                if (current_user.id_tipo == 1): 
+                        return redirect(url_for('home'))
+                elif (current_user.id_tipo == 2):
+                        form_crear_turno = AsignarTurno()
+                        id_hora = j
+                        id_empleado= plantilla.matriz[0][i].id
+                        if form_crear_turno.validate_on_submit():
+                                turno = Turno.query.filter_by(date = datePlant, id_empleado = id_empleado, id_hora = id_hora).first()
+                                turno.id_cliente = form_crear_turno.dni.data
+                                db.session.commit()
+                                flash('Se ha asignado el turno con exito', 'success')
+                                cliente = Cliente.query.filter_by(id_cliente = form_crear_turno.dni.data).first()
+                                mandar_mail_turno(cliente, date_str)
+                                return redirect(url_for("plantilla_turnos", date_str = date_str))
+                        return render_template('opciones_turno_disponible.html', title="Opciones para turno disponible", form_crear_turno=form_crear_turno, date_str=date_str, i=i, j=j)
+
+@app.route("/cambio-disponibilidad/<string:date_str>/<int:i>/<int:j>", methods=['GET', 'POST'])
+@login_required
+def cambio_disponibilidad(date_str, j, i):
+        datePlant = date.fromisoformat(date_str)
+        plantilla = Plantilla(datePlant)
+        id_empleado = plantilla.matriz[0][i].id
+        if current_user.is_authenticated:
+                turno = Turno.query.filter_by(date = datePlant, id_empleado = id_empleado, id_hora = j).first()
+                if turno.disponible:
+                        turno.disponible = False
+                else:
+                        turno.disponible = True
+                db.session.commit()
+                return redirect(url_for("plantilla_turnos", date_str = date_str))
+
+@app.route("/plantilla-turnos/gestion-eliminar-turno<string:date_str>/<int:i>/<int:j>", methods=['GET', 'POST'])
+@login_required
+def gestion_elimiar_turno(date_str, j, i):
+        if current_user.is_authenticated:
+                datePlant = date.fromisoformat(date_str)
+                plantilla = Plantilla(datePlant)
+                if (current_user.id_tipo == 2): 
+                        return render_template('gestion_eliminar_turno.html', title="Gesstion de eliminacion de turnos", date_str = date_str, i=i, j=j)
+                else:
+                        return redirect(url_for('home'))
+
+@app.route("/plantilla-turnos/eliminar-turno<string:date_str>/<int:i>/<int:j>", methods=['GET', 'POST'])
+@login_required
+def eliminar_turno(date_str, j, i):
+        if current_user.is_authenticated:
+                datePlant = date.fromisoformat(date_str)
+                plantilla = Plantilla(datePlant)
+                if current_user.id_tipo == 2:
+                        id_hora = j
+                        id_empleado = plantilla.matriz[0][i].id
+                        turno = Turno.query.filter_by(date = datePlant, id_empleado = id_empleado, id_hora = id_hora).first()
+                        turno.id_cliente = None
+                        db.session.commit()
+                        return redirect(url_for("plantilla_turnos", date_str = date_str))
+                else:
+                        return redirect(url_for('historias_clinicas'))
+
+@app.route("/cambio-atendido/<string:date_str>/<int:i>/<int:j>", methods=['GET', 'POST'])
+@login_required
+def cambio_atendido(date_str, j, i):
+        datePlant = date.fromisoformat(date_str)
+        plantilla = Plantilla(datePlant)
+        id_hora = j
+        id_empleado = plantilla.matriz[0][i-1].id
+        if current_user.is_authenticated:
+                turno = Turno.query.filter_by(date = datePlant, id_empleado = id_empleado, id_hora = id_hora).first()
+                if turno.atendido:
+                        turno.atendido = False
+                else:
+                        turno.atendido = True
+                db.session.commit()
+                return redirect(url_for("plantilla_turnos", date_str = date_str))
 
 @app.route("/pacientes", methods=['GET', 'POST'])
 @login_required
@@ -179,7 +255,7 @@ def editar_pacientes(id_cliente):
                         return redirect(url_for('home'))
         else:
                 return redirect(url_for('login'))
-                
+
 @app.route("/pacientes/eliminar/<int:id_cliente>", methods=['GET', 'POST'])
 @login_required
 def eliminar_pacientes(id_cliente):
@@ -198,7 +274,20 @@ def eliminar_pacientes(id_cliente):
         else:
                 return redirect(url_for('login'))
 
-def mandar_mail_turno(Cliente, Date):
-        msg = Message('Confirmacion de turno Pedicenter', sender='mipedicenter@gmail.com', recipients=[Cliente.email])
-        msg.body = f''' Un turno podologico ha sido asignado exitosamente para el dia {Date} en la sede Arenales 1283 PB.'''
+def mandar_mail_turno(cliente, date_str):
+        msg = Message('Confirmacion de turno Pedicenter', sender='mipedicenter@gmail.com', recipients=[cliente.email])
+        msg.body = f''' Felicitaciones!!
+
+        Un turno podologico ha sido asignado exitosamente para el dia {date_str} en la sede Arenales 1283 PB.
+        
+        Att: Pedicenter.'''
         mail.send(msg)
+
+@app.route("/historias-clinicas/<int:id_cliente>", methods=['GET', 'POST'])
+@login_required
+def historias_clinicas(id_cliente):
+        cliente = Cliente.query(id_cliente = id_cliente)
+        historias_clinicas = Historiaclinica.query.filter_by(id_cliente = cliente.id_cliente).all()
+        if current_user.is_authenticated:
+                if current_user.id_tipo == 1: 
+                        return render_template(url_for('historias_clinicas.html', title=f"Historial de {cliente.username}", cliente=cliente, historias_clinicas=historias_clinicas))
