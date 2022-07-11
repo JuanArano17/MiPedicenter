@@ -1,5 +1,5 @@
 from flask_mail import Message
-from appmipedicenter import app, mail
+from appmipedicenter import mail
 def mandar_mail_turno(cliente, date_str, hora, nombre_empleado):
        msg = Message('Confirmacion de turno Pedicenter', sender='mipedicenter@gmail.com', recipients=[cliente.email])
        msg.body = f''' Estimado/a {cliente.username}:
