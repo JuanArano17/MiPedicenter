@@ -1,4 +1,3 @@
-from asyncio.windows_events import NULL
 from http.client import REQUEST_HEADER_FIELDS_TOO_LARGE
 from flask import render_template, url_for, flash, redirect, request, Blueprint
 from appmipedicenter.models import Cliente, Turno
