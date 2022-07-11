@@ -5,6 +5,7 @@ class Config:
     MAIL_SERVER = 'smtp.googlemail.com'
     MAIL_PORT = 465
     MAIL_USERNAME = 'mipedicenter@gmail.com'
-    MAIL_PASSWORD = 'mmfeflirnoyrdbrh'
+    MAIL_PASSWORD = 'pediarenalescenter' 
+    #MAIL_PASSWORD = 'mmfeflirnoyrdbrh'
     MAIL_USE_TSL = False
     MAIL_USE_SSL = True
