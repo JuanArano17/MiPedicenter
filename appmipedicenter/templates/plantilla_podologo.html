@@ -17,17 +17,17 @@
                             {% for i in range(0, 3) %}
                                     <td class="td-plantilla">
                                         {% if matriz[j][i] == "No disponible" %} 
-                                            <a href="{{ url_for('cambio_disponibilidad', date_str = plantilla.date_str, j=j, i=i) }}" class = "boton-plantilla boton-plantilla-cliente-no-diponible" style='text-decoration:none;color:black'>No Disponible</a>
+                                            <a href="{{ url_for('turno.cambio_disponibilidad', date_str = plantilla.date_str, j=j, i=i) }}" class = "boton-plantilla boton-plantilla-cliente-no-diponible" style='text-decoration:none;color:black'>No Disponible</a>
                                         {% elif i == 1 %} 
                                             {% if matriz[j][i] != "" %}
-                                                <a href="{{ url_for('historias_clinicas', id_cliente = matriz[j][i].id_cliente)}}" class="boton-plantilla boton-plantilla-cliente" style='text-decoration:none;color:black'> {{ matriz[j][i].username }}</button>
+                                                <a href="{{ url_for('historiaclinica.historias_clinicas', id_cliente = matriz[j][i].id_cliente)}}" class="boton-plantilla boton-plantilla-cliente" style='text-decoration:none;color:black'> {{ matriz[j][i].username }}</button>
                                             {% else %}
-                                                <a href="{{ url_for('cambio_disponibilidad', date_str=plantilla.date_str, j=j, i=i)}}" class="boton-plantilla boton-plantilla-cliente" style='text-decoration:none;color:black'>Disponible</a>
+                                                <a href="{{ url_for('turno.cambio_disponibilidad', date_str=plantilla.date_str, j=j, i=i)}}" class="boton-plantilla boton-plantilla-cliente" style='text-decoration:none;color:black'>Disponible</a>
                                             {% endif %}
                                         {% elif i == 0 %}       
                                             {{ matriz[j][i] }}
                                         {% elif i == 2 and (matriz[j][i] == "No" or matriz[j][i] == "Si") %}
-                                            <a href="{{ url_for('cambio_atendido', date_str=plantilla.date_str, j=j, i=i)}}" class="boton-plantilla boton-plantilla-cliente" style='text-decoration:none;color:black'>{{ matriz[j][i] }}</button>
+                                            <a href="{{ url_for('turno.cambio_atendido', date_str=plantilla.date_str, j=j, i=i)}}" class="boton-plantilla boton-plantilla-cliente" style='text-decoration:none;color:black'>{{ matriz[j][i] }}</button>
                                         {% else %}
                                             
                                         {% endif %}

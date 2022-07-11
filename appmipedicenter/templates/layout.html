@@ -27,23 +27,23 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarToggle">
                     <div class="navbar-nav mr-auto">
-                        <a class="nav-item nav-link" href="{{ url_for('home') }}">Home</a>
+                        <a class="nav-item nav-link" href="{{ url_for('main.home') }}">Home</a>
                         {% if current_user.is_authenticated %}
-                            <a class="nav-item nav-link" href="{{ url_for('mi_perfil') }}">MiPerfil</a>
+                            <a class="nav-item nav-link" href="{{ url_for('empleado.mi_perfil') }}">MiPerfil</a>
                             {% if current_user.id_tipo == 2 %}
-                                <a class="nav-item nav-link" href="{{ url_for('pacientes') }}">Pacientes</a>
+                                <a class="nav-item nav-link" href="{{ url_for('cliente.pacientes') }}">Pacientes</a>
                             {% endif %}
-                            <a class="nav-item nav-link" href="{{ url_for('mi_calendario') }}">MiCalendario</a>
+                            <a class="nav-item nav-link" href="{{ url_for('turno.mi_calendario') }}">MiCalendario</a>
                         {% endif %}
                     </div>
                 </div>
                 <!-- Navbar Right Side -->
                 <div class="navbar-nav">
                     {% if current_user.is_authenticated %}
-                        <a class="nav-item nav-link" href="{{ url_for('logout') }}">Logout</a>
+                        <a class="nav-item nav-link" href="{{ url_for('empleado.logout') }}">Logout</a>
                     {% else %}
-                        <a class="nav-item nav-link" href="{{ url_for('login') }}">Login</a>
-                        <a class="nav-item nav-link" href="{{ url_for('register') }}">Register</a>
+                        <a class="nav-item nav-link" href="{{ url_for('empleado.login') }}">Login</a>
+                        <a class="nav-item nav-link" href="{{ url_for('empleado.register') }}">Register</a>
                     {% endif %}
                 </div>
             </div>

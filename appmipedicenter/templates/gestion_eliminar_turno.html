@@ -3,7 +3,7 @@
     <div class="content-section col-sm-3">
         <p></p>
         <p>¿Desea ELIMINAR el turno?</p>
-        <a href="{{ url_for('eliminar_turno', date_str = date_str, j=j, i=i) }}" class = "btn btn-outline-info" style='text-decoration:none;color:black'>Eliminar</a>
-        <a href="{{ url_for('plantilla_turnos', date_str = date_str) }}" class = "btn btn-outline-info" style='text-decoration:none;color:black'>Cancelar</a>
+        <a href="{{ url_for('turno.eliminar_turno', date_str = date_str, j=j, i=i) }}" class = "btn btn-outline-info" style='text-decoration:none;color:black'>Eliminar</a>
+        <a href="{{ url_for('turno.plantilla_turnos', date_str = date_str) }}" class = "btn btn-outline-info" style='text-decoration:none;color:black'>Cancelar</a>
     </div>
 {% endblock content%}

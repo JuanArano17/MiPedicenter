@@ -70,7 +70,7 @@
             </div>
         </form>
         <p></p>
-        <form action="{{ url_for('eliminar_cuenta', id = current_user.id) }}" method="POST">
+        <form action="{{ url_for('empleado.eliminar_cuenta', id = current_user.id) }}" method="POST">
             <input class="btn btn-danger" type="submit" value="Eliminar Cuenta">
         </form>
     </div>

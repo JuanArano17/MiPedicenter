@@ -27,11 +27,11 @@
         <p></p>
         <div class="form-group col-4 card card-body">
             <p>En caso de querer cambiar la disponibilidad del turno, haga click aquí</p>
-            <a href="{{ url_for('cambio_disponibilidad', date_str = date_str, j=j, i=i) }}" class = "btn btn-outline-info" style='text-decoration:none;color:black'>Cambiar a No Disponible</a>
+            <a href="{{ url_for('turno.cambio_disponibilidad', date_str = date_str, j=j, i=i) }}" class = "btn btn-outline-info" style='text-decoration:none;color:black'>Cambiar a No Disponible</a>
         </div>
         <p></p>
         <div class="form-group col-4 card card-body">
-            <a href="{{ url_for('plantilla_turnos', date_str = date_str) }}" class = "btn btn-outline-info" style='text-decoration:none;color:black'>Volver a Plantilla</a>
+            <a href="{{ url_for('turno.plantilla_turnos', date_str = date_str) }}" class = "btn btn-outline-info" style='text-decoration:none;color:black'>Volver a Plantilla</a>
         </div>
     </tr>
 {% endblock content%}
