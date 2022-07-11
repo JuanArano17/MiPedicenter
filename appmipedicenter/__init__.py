@@ -21,9 +21,11 @@ from appmipedicenter.empleado.routes import empleado
 from appmipedicenter.historiaclinica.routes import historiaclinica
 from appmipedicenter.turno.routes import turno
 from appmipedicenter.main.routes import main
+from appmipedicenter.errors.handlers import errors
 
 app.register_blueprint(cliente)
 app.register_blueprint(empleado)
 app.register_blueprint(historiaclinica)
 app.register_blueprint(turno)
 app.register_blueprint(main)
+app.register_blueprint(errors)
