@@ -1,6 +1,6 @@
 from http.client import REQUEST_HEADER_FIELDS_TOO_LARGE
 from flask import render_template, url_for, flash, redirect, request, Blueprint
-from appmipedicenter.models import Cliente, Turno
+from appmipedicenter.models import Cliente, Historiaclinica, Turno
 from appmipedicenter.cliente.forms import  ClienteForm, ClienteUpdateForm
 from appmipedicenter import db
 from flask_login import current_user, login_required
@@ -72,7 +72,10 @@ def eliminar_pacientes(id_cliente):
                 if current_user.id_tipo == 2: 
                         cliente = Cliente.query.filter_by(id_cliente = id_cliente).first()
                         lista_turnos_cliente = Turno.query.filter_by(id_cliente = cliente.id_cliente)
+                        lista_historias_clinicas = Historiaclinica.query.filter_by(id_cliente = id_cliente)
                         for i in lista_turnos_cliente:
+                                db.session.delete(i)
+                        for i in lista_historias_clinicas:
                                 db.session.delete(i)
                         db.session.delete(cliente)
                         db.session.commit()
