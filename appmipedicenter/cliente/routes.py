@@ -39,7 +39,7 @@ def editar_pacientes(id_cliente):
         if current_user.is_authenticated:
                 if current_user.id_tipo == 2: 
                         cliente = Cliente.query.filter_by(id_cliente = id_cliente).first()
-                        form = ClienteUpdateForm()
+                        form = ClienteUpdateForm(cliente)
                         if form.validate_on_submit():
                                 if cliente.id_cliente != form.dni.data:
                                         listaTurnosCliente = Turno.query.filter_by(id_cliente = cliente.id_cliente)
