@@ -7,7 +7,7 @@ from appmipedicenter.models import Empleado
 class RegistrationForm(FlaskForm):
     username = StringField('Nombre Completo', validators=[DataRequired()])
     dni = IntegerField('DNI', validators=[DataRequired()])
-    fecha_nacimiento = DateField('Fecha Nacimiento YYYY-MM-DD', validators=[DataRequired()])
+    fecha_nacimiento = DateField('Fecha Nacimiento', validators=[DataRequired()])
     telefono = IntegerField('Nro de Telefono (solo carácteres numéricos)', validators=[DataRequired()])
     email = StringField('E-Mail', validators=[DataRequired(), Email()])
     password = PasswordField('Contraseña', validators=[DataRequired()])

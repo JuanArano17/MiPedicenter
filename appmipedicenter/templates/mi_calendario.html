@@ -11,10 +11,10 @@
                 initialView: 'dayGridMonth',
                 selectable: true,
                 dateClick: function(info) {
-                    window.location.href = "http://localhost:5000/plantilla-turnos/" + info.dateStr
+                    window.location.href = "/plantilla-turnos/" + info.dateStr
                     // var jsonDate= {"date": info.dateStr}
                     $.ajax({
-                        url:"http://localhost:5000/plantilla-turnos/" + info.dateStr,
+                        url:"/plantilla-turnos/" + info.dateStr,
                         type:"POST",
                         dataType: 'text',
                         contentType: 'plain/text', //"application/x-www-form-urlencoded; charset=UTF-8",

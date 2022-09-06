@@ -20,14 +20,14 @@ def mi_calendario():
 
 @turno.route("/plantilla-turnos/<string:date_str>", methods=['GET', 'POST'])
 @login_required
-def plantilla_turnos(date_str):
+def plantilla_turnos(date_str):          #Incluye CRUD Turnos, Disp Horario e Historias Clinicas
         if current_user.is_authenticated:
                 datePlant = date.fromisoformat(date_str)
                 plantilla = Plantilla(datePlant)
-                if (current_user.id_tipo == 1):     #Incluye CRUD Turnos, Disp Horario e Historias Clinicas
+                if (current_user.id_tipo == 1):    
                         podologo = Empleado.query.filter_by(id = current_user.id).first()
                         plantilla.crear_matriz_podologo(podologo)
-                        return render_template('plantilla_podologo.html', title="Calendario Vista Podologo", matriz=plantilla.matriz_podologo, plantilla = plantilla)
+                        return render_template('plantilla_podologo.html', title="Calendario Vista Podologo", plantilla = plantilla)
                 elif (current_user.id_tipo == 2):
                         return render_template('plantilla_recep.html', title="Calendario Vista Recepcionista", plantilla=plantilla)
         else:
