@@ -35,7 +35,7 @@ def historias_clinicas(id_cliente):
                 return render_template('historias_clinicas.html', title=title_str, cliente=cliente, historias_clinicas=historias_clinicas, form=form, lista_podologos = lista_podologos)
         return redirect(url_for('main.home'))
 
-@historiaclinica.route("/historias-clinicas/eliminar/<int:id_historia>", methods=['GET', 'POST'])
+@historiaclinica.route("/historias-clinicas/eliminar/<int:id_historia>/<int:num>", methods=['GET', 'POST'])
 @login_required
 def eliminar_historia(id_historia, num):
         if current_user.is_authenticated:
@@ -54,7 +54,7 @@ def eliminar_historia(id_historia, num):
         else:
                 return redirect(url_for('empleado.login'))
 
-@historiaclinica.route("/historias-clinicas/editar/<int:id_historia>", methods=['GET', 'POST'])
+@historiaclinica.route("/historias-clinicas/editar/<int:id_historia>/<int:num>", methods=['GET', 'POST'])
 @login_required
 def editar_historia(id_historia, num):
         if current_user.is_authenticated:

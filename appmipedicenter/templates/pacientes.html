@@ -111,6 +111,8 @@
                         <td width = "130"> 
                             <a href="{{ url_for('cliente.editar_pacientes', id_cliente = i.id_cliente) }}" class = "btn btn-secondary btn-sm">Editar</a>
                             <a href="{{ url_for('cliente.eliminar_pacientes', id_cliente = i.id_cliente) }}" class = "btn btn-danger btn-delete btn-sm">Eliminar</a>
+                            <p></p>
+                            <a href="{{ url_for('historiaclinica.historias_clinicas', id_cliente = i.id_cliente) }}" class = "btn  btn-secondary btn-sm">Ir a Hist.Clin.</a>
                         </td>
                     </tr>
                     {% endfor %}

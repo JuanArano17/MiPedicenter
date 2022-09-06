@@ -136,8 +136,8 @@
                             {% endfor %}
                         </td>
                         <td width = "130"> 
-                            <a href="{{ url_for('historiaclinica.editar_historia', id_historia = i.id_historia_clinica, num=0) }}" class = "btn btn-secondary btn-sm">Editar</a>
-                            <a href="{{ url_for('historiaclinica.eliminar_historia', id_historia = i.id_historia_clinica, num=0) }}" class = "btn btn-danger btn-delete btn-sm">Eliminar</a>
+                            <a href="{{ url_for('historiaclinica.editar_historia', id_historia = i.id_historia_clinica, num = 0) }}" class = "btn btn-secondary btn-sm">Editar</a>
+                            <a href="{{ url_for('historiaclinica.eliminar_historia', id_historia = i.id_historia_clinica, num = 0) }}" class = "btn btn-danger btn-delete btn-sm">Eliminar</a>
                         </td>
                     </tr>
                     {% endfor %}
