@@ -27,6 +27,7 @@ class Empleado(db.Model, UserMixin):
         id_tipo = db.Column(db.Integer, db.ForeignKey('tipoempleado.id_tipo'), nullable=False)
         historia_clinica = db.relationship('Historiaclinica', backref='Escritor', lazy=True)
         turno = db.relationship('Turno', backref='Podologo', lazy=True)
+
         def __repr__(self):
                 return f'Empleado'
 
