@@ -12,7 +12,6 @@ cliente = Blueprint('cliente', __name__)
 @login_required
 def pacientes():
         if current_user.is_authenticated:
-                if current_user.id_tipo == 2: 
                         client_list = Cliente.query.all()
                         form = ClienteForm()
                         if form.validate_on_submit():
@@ -28,8 +27,6 @@ def pacientes():
                                 flash(f'El cliente {form.username.data} ha sido ingresado/a con exito.', 'success')
                                 return redirect(url_for('cliente.pacientes'))
                         return render_template('pacientes.html', title="Gestion de Pacientes", clientes = client_list, form=form) 
-                else:
-                        return redirect(url_for('main.home'))
         else:
                 return redirect(url_for('empleado.login'))
 
