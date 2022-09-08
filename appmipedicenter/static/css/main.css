@@ -1,3 +1,6 @@
+:root {
+  filter: invert(100%);
+}
 .boton-plantilla{
   text-align: center;
   font-size: 16px;
