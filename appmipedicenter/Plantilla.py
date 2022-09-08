@@ -1,5 +1,4 @@
 from datetime import *
-from sqlalchemy import false, null
 from appmipedicenter import db
 from appmipedicenter.models import Empleado, Hora, Turno, Cliente
 
