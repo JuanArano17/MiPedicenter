@@ -82,8 +82,8 @@ After installation, you can start using MiPedicenter to:
 
 ## Authors
 
-- **Juan Pablo Arano** - *Initial Work* - [YourProfile](https://github.com/JuanArano17)
-- **Sofia Alejandra Prieto** - *Initial Work* - [YourProfile](https://github.com/sofipp)
+- **Juan Pablo Arano** - *Designer, Programmer & Tester* - [Juan Pablo Arano](https://github.com/JuanArano17)
+- **Sofia Alejandra Prieto** - *Designer & Tester* - [Sofia Aleandra Prieto](https://github.com/sofipp)
   
 See also the list of [contributors](https://github.com/JuanArano17/MiPedicenter/contributors) who participated in this project.
 
